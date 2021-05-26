@@ -1,0 +1,63 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    View Cards
+{% endblock %}
+
+{% block main %}
+
+    <h2>
+        View Cards: {{ deckname }}
+    </h2>
+    <p class="mb-1">
+        View, create, and modify the cards in this deck!<br/>
+    </p>
+
+    <div class="text-right"><a href="/add" class="btn btn-primary">Add Cards</a></div>
+
+    {% if cards|length < 1 %}
+
+        <p>
+            <strong>This deck doesn't have any cards. Why don't you <a href="/add">add a new card</a>?</strong>
+        </p>
+
+    {% else %}
+
+        <p class="small text-secondary info-hover">&gt; Mouse over a card to see the answer side. Click a card to edit.</p>
+        <p class="small text-secondary info-nohover">&gt; Touch a card to edit. Touch its flip button to see the answer.</p>
+
+        <div class="text-center small">This deck currently has <b>{{cards|length}} card{% if cards|length != 1 %}s{% endif %}</b>!</div>
+
+        <div class="d-flex justify-content-center flex-wrap">
+
+        {% for card in cards %}
+
+            <div class="flip-card flip-card-hover">
+                <button type="button" class="btn btn-secondary flip-button position-absolute" style="top: -1.2rem; right: -1.2rem; z-index: 9999;" onclick="flipCard(this)">Flip</button>
+                <div class="flip-card-inner" onclick="javascript: window.location.href='/edit?id={{card['id']}}'">
+                    <div class="flip-card-front card-body">
+                      <p class="card-text">{{ card['question'] }}</p>
+                    </div>
+                    <div class="flip-card-back card-body">
+                      <p class="card-text">{{ card['answer'] }}</p>
+                    </div>
+                </div>
+            </div>
+
+        {% endfor %}
+
+        </div>
+
+        <script>
+            function flipCard(element) {
+                let card = element.parentElement.querySelector('.flip-card-inner');
+                if(card.classList.contains('flipped'))
+                    card.classList.remove('flipped')
+                else
+                    card.classList.add('flipped')
+            }
+        </script>
+
+    {% endif %}
+
+{% endblock %}

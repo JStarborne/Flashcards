@@ -1,0 +1,53 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Add New Card
+{% endblock %}
+
+{% block main %}
+    <h2>
+        Add Card: {{ deckname }}
+    </h2>
+    <p>
+        View, create, and modify the cards in this deck!<br/>
+    </p>
+
+    <div class="text-right"><a href="/cards" class="btn btn-secondary">View Cards</a></div>
+
+    <div class="form-group mt-0">
+        {% if success %}
+            <span class="text-success">{{success}}</span><br/>
+        {% endif %}
+        {% for error in errors %}
+            <span class="text-danger">{{error}}</span><br/>
+        {% endfor %}
+    </div>
+
+    <form action="/add" method="post">
+
+        <div class="d-flex justify-content-center flex-wrap">
+
+            <!-- Front -->
+            <div class="card deck" style="cursor: auto;">
+                <div class="card-body overflow-hidden pb-1">
+                    <textarea name="question" maxlength="320" placeholder="Click to add question text!" autocomplete="off" class="textarea-flashcard w-100 h-100" required></textarea>
+                </div>
+                <div class="text-center"><p class="card-text text-primary">Front</p></div>
+            </div>
+
+            <!-- Back -->
+            <div class="card deck" style="cursor: auto; background-color: #ffffee;">
+                <div class="card-body overflow-hidden pb-1">
+                    <textarea name="answer" maxlength="320" placeholder="Click to add answer text!" autocomplete="off" class="textarea-flashcard w-100 h-100" required></textarea>
+                </div>
+                <div class="text-center"><p class="card-text text-primary">Back</p></div>
+            </div>
+
+        </div>
+
+        <div class="text-center small">This deck currently has <b>{{count}} card{% if count != 1 %}s{% endif %}</b>!</div>
+
+        <div class="text-right"><button class="btn btn-primary" type="submit">Save to Deck</button></div>
+    </form>
+
+{% endblock %}

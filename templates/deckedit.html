@@ -1,0 +1,44 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Edit Deck
+{% endblock %}
+
+{% block main %}
+
+    <h2>
+        Edit Deck
+    </h2>
+    <p>
+        Create various decks to help you memorize different topics!<br/>
+    </p>
+
+    <div class="text-right"><a href="/decks" class="btn btn-secondary">Back to Decks</a></div>
+
+    <div class="form-container mt-5 mx-auto">
+        <form action="/deckedit" method="post">
+            <input type="hidden" name="id" value="{{ deck['id'] }}">
+            <div class="form-group mt-0 text-danger">
+                {% for error in errors %}
+                    {{error}}<br/>
+                {% endfor %}
+            </div>
+            <div class="form-group">
+                <input type="text" class="form-control" name="title" placeholder="Title" value="{{ deck['title'] }}" autocomplete="off" maxlength="50" required>
+            </div>
+            <div class="form-group">
+                <textarea class="form-control" name="description" placeholder="Give this deck a short description!" rows="6" autocomplete="off" maxlength="320" required>{{ deck['description'] }}</textarea>
+            </div>
+            <div class="text-right"><button class="btn btn-danger mr-3" type="button" onclick="deleteDeck({{ deck['id'] }})">Delete</button><button class="btn btn-primary" type="submit">Save Changes</button></div>
+        </form>
+    </div>
+
+    <script>
+        function deleteDeck(id) {
+            if (window.confirm("Are you sure you want to delete this deck?")) {
+                window.location.href = "/delete_deck?id=" + id;
+            }
+        }
+    </script>
+
+{% endblock %}

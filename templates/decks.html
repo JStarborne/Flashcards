@@ -1,0 +1,54 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Decks
+{% endblock %}
+
+{% block main %}
+
+    <h2>
+        Decks
+    </h2>
+    <p class="mb-1">
+        Welcome to your personal collection of flash cards!<br/>
+    </p>
+    <div class="text-right"><a href="/create" class="btn btn-primary">Create New Deck</a>{% if show_practice %}<a href="/practice" class="btn btn-warning ml-3">Practice</a>{% elif deckname %}<a href="/add" class="btn btn-warning ml-3">Add Cards</a>{% endif %}</div>
+
+    {% if decks|length < 1 %}
+
+        <p>
+            You don't currently have any decks. <strong>Get started by <a href="/create">creating your first deck</a>!</strong>
+        </p>
+
+    {% else %}
+
+        <p class="small text-secondary mt-3 info-hover">&gt; Click a deck to select it as the active deck, and <a href="/practice">start practicing now</a>!</p>
+        <p class="small text-secondary mt-3 info-nohover">&gt; Touch a deck to select it as the active deck, and <a href="/practice">start practicing now</a>!</p>
+
+        <div class="d-flex justify-content-center flex-wrap">
+
+        {% for deck in decks %}
+
+            <div class="card deck {% if deck['id'] == current_deck%}deck-active{% endif %}" onclick="javascript: window.location.href='/decks?swap={{ deck['id'] }}'">
+
+                <!-- {% if deck['id'] == current_deck %}<span class="badge badge-pill badge-info position-absolute" style="bottom: -0.5rem; left: -0.5rem">Active</span>{% endif %} -->
+
+                <div class="position-absolute d-flex justify-content-right" style="top: -0.5rem; right: -0.5rem;">
+                    <a href="/deckedit?id={{ deck['id'] }}" class="btn btn-sm btn-secondary ml-2">Edit Deck</a>
+                    <a href="/cards" class="btn btn-sm btn-primary ml-2">View Cards</a>
+                </div>
+
+                <div class="card-body overflow-hidden">
+                    <h5 class="card-title">{{ deck['title'] }}</h5>
+                    <p class="card-text">{{ deck['description'] }}</p>
+                </div>
+                <div class="text-center mb-1"><p class="card-text text-primary">{{ deck['count'] }} cards</p></div>
+            </div>
+
+        {% endfor %}
+
+        </div>
+
+    {% endif %}
+
+{% endblock %}

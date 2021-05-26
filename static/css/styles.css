@@ -1,0 +1,195 @@
+/*
+** default.css
+** Default styling for Flash Card final project
+** Note: This is cascaded over Bootstrap 5.
+** Jessie Starborne
+*/
+
+html, body {
+  height: 100%;
+}
+
+.nav-deck {
+  margin-right: auto;
+  font-weight: 400;
+  font-size: 80%;
+  color: #fff;
+}
+
+.nav-practice {
+  color: #deae00 !important;
+}
+
+.nav-practice:hover {
+  color: #ffce00 !important;
+}
+
+.login-container {
+  max-width: 450px;
+}
+
+.form-container {
+  box-shadow: 1px 1px 5px rgba(0,0,100,0.35);
+  background-color: #eeffff;
+  border-radius: 10px;
+  max-width: 600px;
+  padding: 1rem;
+}
+
+.text-login {
+  color: #fff;
+}
+
+.logout-link {
+  color: rgba(255,255,255,.6);
+}
+
+.logout-link:hover {
+  text-decoration: none;
+  color: #fff;
+}
+
+.jumbotron {
+  box-shadow: 1px 1px 5px rgba(0,0,100,0.35);
+  background-color: #eeffff;
+  padding-bottom: 1rem;
+}
+
+.jumbotron-bg {
+  background-image: url("/static/img/jumbotron_bg.jpg");
+  background-size: cover;
+  background-position: center;
+  border-radius: 20px;
+  min-height: 300px;
+}
+
+.deck {
+  box-shadow: 1px 1px 5px rgba(0,0,100,0.35);
+  background-color: #eeffff;
+  border-radius: 1rem;
+  width: 18rem;
+  margin: 1rem;
+  height: 24rem;
+  clear: none;
+  float: left;
+  cursor: pointer;
+}
+
+.deck-active {
+  background-color: #ffffee;
+  box-shadow: 0 0 20px rgb(255,200,150), 1px 1px 5px rgba(0,0,100,0.35);
+}
+
+/* Card flip CSS from https://www.w3schools.com/howto/howto_css_flip_card.asp */
+
+/* The flip card container */
+.flip-card {
+  background-color: transparent;
+  width: 18rem;
+  height: 24rem;
+  margin: 1rem;
+  perspective: 1000px;
+  clear: none;
+  float: left;
+}
+
+/* This container is needed to position the front and back side */
+.flip-card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.6s;
+  transform-style: preserve-3d;
+  cursor: pointer;
+}
+
+/* Do an horizontal flip when you move the mouse over the flip box container */
+.flipped {
+  transform: rotateY(-180deg);
+}
+
+/* Position the front and back side */
+.flip-card-front, .flip-card-back {
+  box-shadow: 1px 1px 5px rgba(0,0,100,0.35);
+  background-color: #eeffff;
+  border-radius: 1rem;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  -webkit-backface-visibility: hidden; /* Safari */
+  backface-visibility: hidden;
+}
+
+/* Style the front side (fallback if image is missing) */
+.flip-card-front {
+  background-color: #eeffff;
+  color: black;
+}
+
+/* Style the back side */
+.flip-card-back {
+  background-color: #ffffee;
+  color: black;
+  transform: rotateY(-180deg);
+}
+
+.info-hover {
+  display: none;
+}
+.info-nohover {
+  display: block;
+}
+
+.card-text {
+  white-space: pre-wrap;
+}
+
+.textarea-flashcard {
+  background: transparent;
+  resize: none;
+  border: 0;
+}
+
+.textarea-flashcard:focus {
+  outline-width: 0;
+}
+
+::placeholder {
+  color: #bbb;
+}
+
+.bg-footer {
+  background: transparent;
+  background-image: -webkit-linear-gradient(bottom, #eeffff 0%, rgba(235,235,235,0.80) 80%, rgba(255,255,255,0) 100%);
+  background-image: -moz-linear-gradient(bottom, #eeffff 0%, rgba(235,235,235,0.80) 80%, rgba(255,255,255,0) 100%);
+  background-image: -o-linear-gradient(bottom, #eeffff 0%, rgba(235,235,235,0.80) 80%, rgba(255,255,255,0) 100%);
+  background-image: linear-gradient(to top, #eeffff 0%, rgba(235,235,235,0.80) 80%, rgba(255,255,255,0) 100%);
+}
+
+
+
+/* Mobile first, etc etc -_- */
+/* This is the "large" breakpoint for Bootstrap */
+@media (min-width: 992px) {
+  .nav-deck {
+    padding-left: 1.5rem;
+  }
+}
+
+/* Disable flip button for devices that can hover */
+@media (hover: hover) {
+  .flip-button {
+    display: none;
+  }
+
+  .flip-card-hover:hover .flip-card-inner {
+    transform: rotateY(-180deg);
+  }
+
+  .info-nohover {
+    display: none;
+  }
+  .info-hover {
+    display: block;
+  }
+}

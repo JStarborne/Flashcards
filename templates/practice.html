@@ -1,0 +1,207 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Practice
+{% endblock %}
+
+{% block main %}
+
+    <h2>
+        Practice: {{ deckname }}
+    </h2>
+    <p class="mb-1">
+        Keep practicing and you'll get there!<br/>
+    </p>
+
+    {% if count < 1 %}
+
+        <p>
+            <strong>This deck doesn't have any cards. Why don't you <a href="/add">add a new card</a>?</strong>
+        </p>
+
+    {% else %}
+
+        <div class="text-right"><button class="btn btn-info" onclick="resetDeck()">Sort</button><button class="btn btn-success ml-3" onclick="resetDeck(1)">Shuffle</button></div>
+
+        <p class="small text-secondary info-hover">&gt; Click the card to reveal the answer or move on to the next card.<br/>You can also use space or enter to progress, R to shuffle, and S to sort!</p>
+        <p class="small text-secondary info-nohover">&gt; Touch the card to reveal the answer or move on to the next card.</p>
+
+        <div class="text-center small">You have <b id="cardCount">{{count}} card{% if count != 1 %}s{% endif %}</b> left to practice!</div>
+
+        <div class="d-flex justify-content-center mb-4 flex-wrap">
+
+            <div class="flip-card">
+                <div class="flip-card-inner flipped" id="cardInner" onclick="cardClick()">
+                    <div class="flip-card-front card-body">
+                      <p class="card-text" id="cardFrontText">???</p>
+                    </div>
+                    <div class="flip-card-back card-body">
+                      <p class="card-text" id="cardBackText">Click on this card to begin!</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <script>
+            const master_cards = {{ cards | tojson }};
+
+            // Copy the cards array
+            let cards = [...master_cards];
+
+            // Shuffle by default
+            shuffle(cards);
+
+            // Application state [0 = Click to begin | 1 = Question | 2 = Answer | 3 = Done]
+            let state = 0;
+
+            // Grab the first card from the deck
+            let card = cards.shift();
+
+            // DOM Elements we need
+            let cardInner = document.getElementById('cardInner');
+            let front     = document.getElementById('cardFrontText');
+            let back      = document.getElementById('cardBackText');
+            let cardCount = document.getElementById('cardCount');
+
+            function cardClick() {
+
+                // If we're currently in an answer state
+                if (state == 2) {
+                    // Got cards left?
+                    if (cards.length) {
+                        // Shift the card
+                        card = cards.shift();
+                    } else {  // No more cards?
+                        // Display a message.
+                        back.innerHTML = "You've made it through the whole deck. Congrats!\n\nWant to practice again? Click the Sort or Shuffle button!";
+
+                        // Update counter
+                        cardCount.innerHTML = "no cards";
+
+                        // Adjust state to "done"
+                        state = 3;
+
+                        return;
+                    }
+                }
+
+                // Handle how we manipulate the card based on state
+                if (state == 1) { // Question
+                    // Just flip it over.
+                    cardInner.classList.add('flipped');
+
+                    // Swap to answer state
+                    state = 2;
+                } else if(state == 0 || state == 2) {
+                    // Answer and start state (This started off as a longer switch statement, but answer and start were identical.)
+                    // Change the front, flip, then change the back. Whee~
+                    swapText(front, card['question']);
+
+                    cardInner.classList.remove('flipped');
+
+                    setTimeout(() => {
+                        swapText(back, card['answer']);
+                    }, 600);
+
+                    // Swap to question state
+                    state = 1;
+
+                    // Update counter
+                    const counter = cards.length + 1;
+                    cardCount.innerHTML = counter + ' card' + (counter != 1 ? 's' : '');
+                }
+            }
+
+            // Reset the deck to either a sorted or shuffled state.
+            function resetDeck(doShuffle = 0) {
+                // Reset the deck
+                cards = [...master_cards];
+
+                // Shuffle if needed
+                if (doShuffle) {
+                    shuffle(cards);
+                }
+
+                // Shift first card
+                card = cards.shift();
+
+                // Check the state of the deck (flipped or not)
+                deckState = 0;
+                if(cardInner.classList.contains('flipped'))
+                    deckState = 1;
+
+                // Do some fancy stuff if we're on the answer side, otherwise be boring about it
+                if(deckState) {
+                    // Change the front, flip, then change the back. Whee~
+                    swapText(front, card['question']);
+
+                    cardInner.classList.remove('flipped');
+
+                    setTimeout(() => {
+                        swapText(back, card['answer']);
+                    }, 600);
+                } else {
+                    // Just change all the text boringly
+                    swapText(front, card['question']);
+                    swapText(back, card['answer']);
+                }
+
+                // Reset counter
+                const counter = cards.length + 1;
+                cardCount.innerHTML = counter + ' card' + (counter != 1 ? 's' : '');
+
+                // Update state
+                state = 1;
+            }
+
+            // Callback function to handle the delay with the flipping card animation
+            function swapText(side, text) {
+                side.innerHTML = text;
+            }
+
+            // Function to shuffle the deck
+            // Mercilessly stolen from the "Fisher-Yates (aka Knuth) Shuffle"
+            // https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
+            function shuffle(array) {
+                var currentIndex = array.length, temporaryValue, randomIndex;
+
+                // While there remain elements to shuffle...
+                while (0 !== currentIndex) {
+
+                    // Pick a remaining element...
+                    randomIndex = Math.floor(Math.random() * currentIndex);
+                    currentIndex -= 1;
+
+                    // And swap it with the current element.
+                    temporaryValue = array[currentIndex];
+                    array[currentIndex] = array[randomIndex];
+                    array[randomIndex] = temporaryValue;
+                }
+
+                return array;
+            }
+
+            // Listen for key commands
+            document.addEventListener('keyup', event => {
+                if (event.code === 'Space' || event.code === 'Enter') {
+                    cardClick();
+                }
+                if (event.code === 'KeyR') {
+                    resetDeck(1);
+                }
+                if (event.code === 'KeyS') {
+                    resetDeck();
+                }
+            })
+
+            // Fix to prevent Bootstrap from keeping the button highlighted after it's clicked
+            $(".btn").mousedown(e => {
+                e.preventDefault();
+            });
+
+        </script>
+
+    {% endif %}
+
+{% endblock %}

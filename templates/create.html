@@ -1,0 +1,31 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Create New Deck
+{% endblock %}
+
+{% block main %}
+    <h2>
+        Create New Deck
+    </h2>
+    <p>
+        Create various decks to help you memorize different topics!<br/>
+    </p>
+
+    <div class="form-container mt-5 mx-auto">
+        <form action="/create" method="post">
+            <div class="form-group mt-0 text-danger">
+                {% for error in errors %}
+                    {{error}}<br/>
+                {% endfor %}
+            </div>
+            <div class="form-group">
+                <input type="text" class="form-control" name="title" placeholder="Title" autocomplete="off" maxlength="50" required autofocus>
+            </div>
+            <div class="form-group">
+                <textarea class="form-control" name="description" placeholder="Give this deck a short description!" rows="6" autocomplete="off" maxlength="320" required></textarea>
+            </div>
+            <div class="text-right"><button class="btn btn-primary" type="submit">Create</button></div>
+        </form>
+    </div>
+{% endblock %}
